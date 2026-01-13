@@ -3,6 +3,8 @@ import SocialButton from '@/themes/fukasawa/components/SocialButton'
 import { Logo } from './Logo'
 import { SVGFooterCircleBG } from './svg/SVGFooterCircleBG'
 import SmartLink from '@/components/SmartLink'
+import { handleEmailClick } from '@/lib/plugins/mailEncrypt'
+import { useRef } from 'react'
 
 /* eslint-disable @next/next/no-img-element */
 export const Footer = props => {
@@ -11,6 +13,7 @@ export const Footer = props => {
     ? props?.latestPosts.slice(0, footerPostCount)
     : []
   const STARTER_FOOTER_LINK_GROUP = siteConfig('STARTER_FOOTER_LINK_GROUP', [])
+  const emailIcon = useRef(null)
   return (
     <>
       {/* <!-- ====== Footer Section Start --> */}
@@ -27,9 +30,32 @@ export const Footer = props => {
                 <p className='mb-8 max-w-[270px] text-base text-gray-7'>
                   {siteConfig('STARTER_FOOTER_SLOGAN')}
                 </p>
-                <div className='-mx-3 flex items-center'>
-                  <div className='mx-3'>
-                    <SocialButton />
+                <div className='flex items-center'>
+                  {/* RSS、Instagram 和 Email 图标 - 统一间距和颜色，向左对齐 */}
+                  <div className='flex items-center space-x-3 text-xl text-gray-300 dark:text-gray-300'>
+                    {siteConfig('ENABLE_RSS') && (
+                      <a
+                        target='_blank'
+                        rel='noreferrer'
+                        title='RSS'
+                        href='/rss/feed.xml'>
+                        <i className='transform hover:scale-125 duration-150 fas fa-rss text-gray-300 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400' />
+                      </a>
+                    )}
+                    <a
+                      target='_blank'
+                      rel='noreferrer'
+                      title='Instagram'
+                      href='https://www.instagram.com/imba_studio_ca/'>
+                      <i className='transform hover:scale-125 duration-150 fab fa-instagram text-gray-300 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400' />
+                    </a>
+                    <a
+                      onClick={e => handleEmailClick(e, emailIcon, 'info@imbastudio.ca')}
+                      title='Email'
+                      className='cursor-pointer'
+                      ref={emailIcon}>
+                      <i className='transform hover:scale-125 duration-150 fas fa-envelope text-gray-300 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400' />
+                    </a>
                   </div>
                 </div>
               </div>
@@ -42,7 +68,7 @@ export const Footer = props => {
                   key={index}
                   className='w-full px-4 sm:w-1/2 md:w-1/2 lg:w-2/12 xl:w-2/12'>
                   <div className='mb-10 w-full'>
-                    <h4 className='mb-9 text-lg font-semibold text-white'>
+                    <h4 className='mb-9 text-lg font-normal text-white'>
                       {item.TITLE}
                     </h4>
                     <ul>
@@ -66,7 +92,7 @@ export const Footer = props => {
             {/* 页脚右侧最新博文 */}
             <div className='w-full px-4 md:w-2/3 lg:w-6/12 xl:w-3/12'>
               <div className='mb-10 w-full'>
-                <h4 className='mb-9 text-lg font-semibold text-white'>
+                <h4 className='mb-9 text-lg font-normal text-white'>
                   {siteConfig('STARTER_FOOTER_BLOG_LATEST_TITLE')}
                 </h4>
                 {/* 展示两条最新博客文章 */}
@@ -134,11 +160,11 @@ export const Footer = props => {
                   <p className='text-base text-gray-7'>
                     Designed and Developed by
                     <a
-                      href='https://github.com/tangly1024/NotionNext'
+                      href='https://www.imbastudio.ca'
                       rel='nofollow noopner noreferrer'
                       target='_blank'
                       className='px-1 text-gray-1 hover:underline'>
-                      NotionNext {siteConfig('VERSION')}
+                      imbastudio
                     </a>
                   </p>
                 </div>

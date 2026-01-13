@@ -10,7 +10,7 @@ const Style = () => {
 
   #theme-starter .sticky{
     position: fixed;
-    z-index: 20;
+    z-index: 60;
     background-color: rgb(255 255 255 / 0.8);
     transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
     transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
@@ -203,6 +203,39 @@ const Style = () => {
 .common-carousel .swiper-button-prev svg{
   height: auto;
   width: auto;
+}
+
+/* Hero 标题样式 - 字体大小由 Tailwind 断点控制，不再使用 vw 单位 */
+#theme-starter .hero-content h1 {
+  width: 100%;
+  /* font-size 由 Tailwind 类控制：text-5xl sm:text-6xl lg:text-7xl */
+  line-height: 1;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+@media (min-width: 960px) {
+  #theme-starter .hero-content h1 {
+    /* font-size 由 Tailwind 类控制：lg:text-7xl */
+    width: 100%;
+    white-space: nowrap;
+  }
+}
+
+/* 移动端菜单横向滚动样式 */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* 移动端菜单项样式优化 */
+@media (max-width: 960px) {
+  #theme-starter #navbarCollapse ul {
+    gap: 0.5rem;
+  }
 }
   `}</style>
 }

@@ -44,6 +44,11 @@ export const Logo = props => {
     }
   }, [isDarkMode, router])
 
+  // 如果是首页，不显示 Logo
+  if (router.route === '/') {
+    return null
+  }
+
   return (
     <div className='w-60 max-w-full px-4'>
       <div className='navbar-logo flex items-center w-full py-5 cursor-pointer'>

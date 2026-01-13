@@ -12,7 +12,10 @@ module.exports = {
     // 'https://npm.elemecdn.com/lxgw-wenkai-webfont@1.6.0/style.css',
     'https://fonts.googleapis.com/css?family=Bitter:300,400,700&display=swap',
     'https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap',
-    'https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500;700&display=swap'
+    'https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500;700&display=swap',
+    'https://fonts.googleapis.com/css2?family=Anton&display=swap',
+    'https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700&display=swap',
+    'https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&display=swap'
   ],
 
   // 字体优化配置
@@ -22,6 +25,9 @@ module.exports = {
   // 无衬线字体 例如'"LXGW WenKai"'
   FONT_SANS: [
     // '"LXGW WenKai"',
+    '"Anton"',
+    '"Nunito"',
+    '"Comfortaa"',
     '"PingFang SC"',
     '-apple-system',
     'BlinkMacSystemFont',

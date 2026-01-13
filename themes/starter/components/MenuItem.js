@@ -22,16 +22,16 @@ export const MenuItem = ({ link }) => {
     <>
       {/* 普通 MenuItem */}
       {!hasSubMenu && (
-        <li className='group relative whitespace-nowrap'>
+        <li className='group relative whitespace-nowrap flex-shrink-0'>
           <SmartLink
             href={link?.href}
             target={link?.target}
-            className={`ud-menu-scroll mx-8 flex py-2 text-base font-medium text-dark group-hover:text-primary dark:text-white lg:mr-0 lg:inline-flex lg:px-0 lg:py-6 ${
+            className={`ud-menu-scroll mx-4 flex py-2 text-[10px] font-medium text-white group-hover:text-primary lg:mx-8 lg:mr-0 lg:inline-flex lg:px-0 lg:py-6 lg:text-base lg:text-dark lg:dark:text-white ${
               router.route === '/'
                 ? 'lg:text-white lg:group-hover:text-white'
                 : ''
             } lg:group-hover:opacity-70`}>
-            {link?.icon && <i className={link.icon + ' mr-2 my-auto'} />}
+            {link?.icon && <i className={link.icon + ' mr-1 lg:mr-2 my-auto text-[10px] lg:text-base'} />}
             {link?.name}
           </SmartLink>
         </li>
@@ -39,10 +39,10 @@ export const MenuItem = ({ link }) => {
 
       {/* 有子菜单的 MenuItem */}
       {hasSubMenu && (
-        <li className='submenu-item group relative whitespace-nowrap'>
+        <li className='submenu-item group relative whitespace-nowrap flex-shrink-0'>
           <button
             onClick={toggleSubMenu}
-            className={`cursor-pointer relative px-8 flex items-center justify-between py-2 text-base font-medium text-dark group-hover:text-primary dark:text-white lg:ml-8 lg:mr-0 lg:inline-flex lg:py-6 lg:pl-0 lg:pr-4 ${
+            className={`cursor-pointer relative px-4 flex items-center justify-between py-2 text-[10px] font-medium text-white group-hover:text-primary lg:px-8 lg:ml-8 lg:mr-0 lg:inline-flex lg:py-6 lg:pl-0 lg:pr-4 lg:text-base lg:text-dark lg:dark:text-white ${
               router.route === '/'
                 ? 'lg:text-white lg:group-hover:text-white'
                 : ''
