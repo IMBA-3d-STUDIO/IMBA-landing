@@ -317,21 +317,11 @@ export const MenuList = props => {
                 width: visibleLinks.length > 4 ? 'auto' : '100%'
               }}>
               {visibleLinks?.map((link, index) => (
-                <li 
+                <MenuItem 
                   key={index} 
-                  className={visibleLinks.length > 4 ? 'flex-shrink-0' : 'flex-1'}
-                  style={{ 
-                    width: visibleLinks.length > 4 
-                      ? `${100 / visibleLinks.length}%` 
-                      : `${100 / Math.max(visibleLinks.length, 4)}%`,
-                    minWidth: visibleLinks.length > 4 
-                      ? `${100 / visibleLinks.length}%` 
-                      : `${100 / Math.max(visibleLinks.length, 4)}%`
-                  }}>
-                  <div className='w-full flex justify-center'>
-                    <MenuItem link={link} />
-                  </div>
-                </li>
+                  link={link} 
+                  isEqualWidth={visibleLinks.length <= 4}
+                />
               ))}
             </ul>
           </div>
