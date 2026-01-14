@@ -209,7 +209,9 @@ export const MenuList = props => {
               </div>
 
               {/* 底部固定区域 - 夜间模式和 Dashboard */}
-              <div className='border-t border-gray-200 bg-gray-50 p-4 dark:border-gray-600 dark:bg-dark-3'>
+              <div 
+                className='border-t border-gray-200 bg-gray-50 p-4 dark:border-gray-600 dark:bg-dark-3'
+                style={{ paddingBottom: `calc(1rem + env(safe-area-inset-bottom))` }}>
                 {/* 深色模式切换 */}
                 <div 
                   onClick={toggleDarkMode}
