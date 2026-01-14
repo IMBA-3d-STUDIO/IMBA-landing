@@ -21,6 +21,7 @@ export const MenuList = props => {
   const [canScrollRight, setCanScrollRight] = useState(false)
   const [canScrollLeftDesktop, setCanScrollLeftDesktop] = useState(false)
   const [canScrollRightDesktop, setCanScrollRightDesktop] = useState(false)
+  const [bottomPadding, setBottomPadding] = useState(0) // 动态计算的底部内边距
   const scrollContainerRef = useRef(null)
   const scrollContainerDesktopRef = useRef(null)
   const router = useRouter()
@@ -144,6 +145,66 @@ export const MenuList = props => {
     }
   }, [visibleLinks])
 
+  // 动态检测 Safari 导航栏高度并调整底部内边距
+  useEffect(() => {
+    if (!showMenu) {
+      setBottomPadding(0)
+      return // 只在菜单打开时监听
+    }
+
+    const calculateBottomPadding = () => {
+      let padding = 0
+
+      // 优先使用 visualViewport API（更准确）
+      if (window.visualViewport) {
+        const viewportHeight = window.visualViewport.height
+        const windowHeight = window.innerHeight
+        padding = Math.max(0, windowHeight - viewportHeight)
+      } else {
+        // 后备方案：使用 innerHeight 和 clientHeight 的差值
+        const windowHeight = window.innerHeight
+        const documentHeight = document.documentElement.clientHeight
+        padding = Math.max(0, windowHeight - documentHeight)
+      }
+
+      // 添加基础安全区域（env(safe-area-inset-bottom) 的备用值）
+      const safeAreaBottom =
+        parseInt(
+          getComputedStyle(document.documentElement).getPropertyValue(
+            '--safe-area-inset-bottom'
+          ) || '0'
+        ) || 0
+
+      setBottomPadding(padding + safeAreaBottom)
+    }
+
+    // 初始计算
+    calculateBottomPadding()
+
+    // 监听 visualViewport 变化
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', calculateBottomPadding)
+      window.visualViewport.addEventListener('scroll', calculateBottomPadding)
+    }
+
+    // 监听窗口大小变化（后备方案）
+    window.addEventListener('resize', calculateBottomPadding)
+
+    return () => {
+      if (window.visualViewport) {
+        window.visualViewport.removeEventListener(
+          'resize',
+          calculateBottomPadding
+        )
+        window.visualViewport.removeEventListener(
+          'scroll',
+          calculateBottomPadding
+        )
+      }
+      window.removeEventListener('resize', calculateBottomPadding)
+    }
+  }, [showMenu]) // 依赖 showMenu，只在菜单打开时监听
+
   if (!visibleLinks || visibleLinks.length === 0) {
     return null
   }
@@ -211,7 +272,7 @@ export const MenuList = props => {
               {/* 底部固定区域 - 夜间模式和 Dashboard */}
               <div 
                 className='border-t border-gray-200 bg-gray-50 p-4 dark:border-gray-600 dark:bg-dark-3'
-                style={{ paddingBottom: `calc(1rem + env(safe-area-inset-bottom))` }}>
+                style={{ paddingBottom: `calc(1rem + ${bottomPadding}px)` }}>
                 {/* 深色模式切换 */}
                 <div 
                   onClick={toggleDarkMode}
