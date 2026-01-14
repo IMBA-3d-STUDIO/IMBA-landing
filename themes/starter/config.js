@@ -326,19 +326,19 @@ const CONFIG = {
       ]
     },
     {
-      TITLE: 'Contact Us',
+      TITLE: 'Connect & Collaborate',
       LINK_GROUP: [
         {
-          TITLE: 'Email',
-          URL: 'https://docs.tangly1024.com/article/start-to-write'
+          TITLE: 'Project Inquiry',
+          URL: 'mailto:info@imbastudio.ca'
         },
         {
           TITLE: 'Instagram',
-          URL: 'https://docs.tangly1024.com/article/notion-short-key'
+          URL: 'https://www.instagram.com/imba_studio_ca/'
         },
         {
-          TITLE: 'Phone Calls',
-          URL: 'https://docs.tangly1024.com/article/notion-faster'
+          TITLE: 'B2B & Corporate Orders',
+          URL: ''
         }
       ]
     }
@@ -346,14 +346,14 @@ const CONFIG = {
 
   STARTER_FOOTER_BLOG_LATEST_TITLE: 'Latest Logs',
 
-  STARTER_FOOTER_PRIVACY_POLICY_TEXT: 'Terms and Policies',
+  STARTER_FOOTER_PRIVACY_POLICY_TEXT: 'Term and Policy',
   STARTER_FOOTER_PRIVACY_POLICY_URL: '/privacy-policy',
 
   STARTER_FOOTER_PRIVACY_LEGAL_NOTICE_TEXT: 'Legacy-notice',
   STARTER_FOOTER_PRIVACY_LEGAL_NOTICE_URL: '/legacy-notice',
 
-  STARTER_FOOTER_PRIVACY_TERMS_OF_SERVICE_TEXT: 'Terms-of-use',
-  STARTER_FOOTER_PRIVACY_TERMS_OF_SERVICE_URL: '/terms-of-use',
+  STARTER_FOOTER_PRIVACY_TERMS_OF_SERVICE_TEXT: 'Term-of-use',
+  STARTER_FOOTER_PRIVACY_TERMS_OF_SERVICE_URL: '/term-of-use',
 
   // 404页面的提示语
   STARTER_404_TITLE: 'We can’t seem to find the page you’re looking for.',

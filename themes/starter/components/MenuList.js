@@ -14,7 +14,7 @@ import DashboardButton from '@/components/ui/dashboard/DashboardButton'
  */
 export const MenuList = props => {
   const { customNav, customMenu, buttonTextColor, enableClerk } = props
-  const { locale, isDarkMode } = useGlobal()
+  const { locale, isDarkMode, toggleDarkMode } = useGlobal()
 
   const [showMenu, setShowMenu] = useState(false) // 控制菜单展开/收起状态
   const [canScrollLeft, setCanScrollLeft] = useState(false)
@@ -172,11 +172,13 @@ export const MenuList = props => {
               {/* 底部固定区域 - 夜间模式和 Dashboard */}
               <div className='border-t border-gray-200 bg-gray-50 p-4 dark:border-gray-600 dark:bg-dark-3'>
                 {/* 深色模式切换 */}
-                <div className='mb-4 flex items-center justify-between rounded-lg bg-white px-4 py-3 dark:bg-dark-2'>
+                <div 
+                  onClick={toggleDarkMode}
+                  className='mb-4 flex items-center justify-between rounded-lg bg-white px-4 py-3 dark:bg-dark-2 cursor-pointer hover:bg-gray-50 dark:hover:bg-dark-3 transition-colors'>
                   <span className='text-sm font-medium text-dark dark:text-white'>
                     {isDarkMode ? 'Light Mode' : 'Dark Mode'}
                   </span>
-                  <DarkModeButton />
+                  <DarkModeButton inSideMenu={true} />
                 </div>
                 
                 {/* Dashboard 按钮 */}

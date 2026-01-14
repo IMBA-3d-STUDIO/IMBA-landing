@@ -1,25 +1,29 @@
 import { useGlobal } from '@/lib/global';
 import { useRouter } from 'next/router';
 
-export const DarkModeButton = () => {
+export const DarkModeButton = ({ inSideMenu = false }) => {
   const { toggleDarkMode } = useGlobal()
   const router = useRouter()
+  
+  // 在 side menu 中时，使用深灰色；否则根据路由判断
+  const lightModeIconColor = inSideMenu 
+    ? 'text-gray-800' 
+    : (router.route === '/' ? 'text-white' : '')
+  
   return <>
-            <label
-                // for="themeSwitcher"
+            <div
                 className="inline-flex cursor-pointer items-center"
                 aria-label="themeSwitcher"
-                name="themeSwitcher"
               >
                 <input
-                  onClick={toggleDarkMode}
                   type="checkbox"
                   name="themeSwitcher"
                   id="themeSwitcher"
                   className="sr-only"
+                  readOnly
                 />
 
-                <span className={`block ${router.route === '/' ? 'text-white' : ''} dark:hidden`}>
+                <span className={`block ${lightModeIconColor} dark:hidden`}>
                   <svg
                     className="fill-current"
                     width="24"
@@ -79,6 +83,6 @@ export const DarkModeButton = () => {
                     </defs>
                   </svg>
                 </span>
-              </label>
+              </div>
     </>
 }
