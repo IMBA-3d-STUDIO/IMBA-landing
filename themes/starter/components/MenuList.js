@@ -21,9 +21,12 @@ export const MenuList = props => {
   const [canScrollRight, setCanScrollRight] = useState(false)
   const [canScrollLeftDesktop, setCanScrollLeftDesktop] = useState(false)
   const [canScrollRightDesktop, setCanScrollRightDesktop] = useState(false)
-  const [bottomPadding, setBottomPadding] = useState(0) // 动态计算的底部内边距
+  const [viewportHeight, setViewportHeight] = useState(null) // 动态计算的视口高度
+  const [topOffset, setTopOffset] = useState(0) // 顶部偏移量，确保面板底部在可见区域
+  const [bottomAreaHeight, setBottomAreaHeight] = useState(0) // 底部固定区域的高度
   const scrollContainerRef = useRef(null)
   const scrollContainerDesktopRef = useRef(null)
+  const bottomAreaRef = useRef(null)
   const router = useRouter()
 
   let links = [
@@ -145,65 +148,75 @@ export const MenuList = props => {
     }
   }, [visibleLinks])
 
-  // 动态检测 Safari 导航栏高度并调整底部内边距
+  // 动态检测 visualViewport 高度并调整侧边菜单和底部位置
   useEffect(() => {
     if (!showMenu) {
-      setBottomPadding(0)
+      setViewportHeight(null)
+      setTopOffset(0)
       return // 只在菜单打开时监听
     }
 
-    const calculateBottomPadding = () => {
-      let padding = 0
-
-      // 优先使用 visualViewport API（更准确）
+    const updateViewport = () => {
+      // 优先使用 visualViewport API（更准确，避免 vh 单位被工具栏影响）
       if (window.visualViewport) {
-        const viewportHeight = window.visualViewport.height
+        const vpHeight = window.visualViewport.height
+        const vpTop = window.visualViewport.offsetTop || 0
+        setViewportHeight(vpHeight)
+        
+        // 计算顶部偏移：确保面板底部紧贴 visualViewport 底部
+        // 当导航栏出现时，visualViewport 会变小，我们需要调整面板的 top 位置
         const windowHeight = window.innerHeight
-        padding = Math.max(0, windowHeight - viewportHeight)
+        const offset = Math.max(0, windowHeight - vpHeight - vpTop)
+        setTopOffset(offset)
       } else {
-        // 后备方案：使用 innerHeight 和 clientHeight 的差值
-        const windowHeight = window.innerHeight
-        const documentHeight = document.documentElement.clientHeight
-        padding = Math.max(0, windowHeight - documentHeight)
+        // 后备方案：使用 innerHeight
+        const height = window.innerHeight
+        setViewportHeight(height)
+        setTopOffset(0)
       }
 
-      // 添加基础安全区域（env(safe-area-inset-bottom) 的备用值）
-      const safeAreaBottom =
-        parseInt(
-          getComputedStyle(document.documentElement).getPropertyValue(
-            '--safe-area-inset-bottom'
-          ) || '0'
-        ) || 0
-
-      setBottomPadding(padding + safeAreaBottom)
+      // 计算底部固定区域的高度（用于菜单内容区域的 padding）
+      if (bottomAreaRef.current) {
+        const height = bottomAreaRef.current.offsetHeight
+        setBottomAreaHeight(height)
+      }
     }
 
     // 初始计算
-    calculateBottomPadding()
+    updateViewport()
 
     // 监听 visualViewport 变化
     if (window.visualViewport) {
-      window.visualViewport.addEventListener('resize', calculateBottomPadding)
-      window.visualViewport.addEventListener('scroll', calculateBottomPadding)
+      window.visualViewport.addEventListener('resize', updateViewport)
+      window.visualViewport.addEventListener('scroll', updateViewport)
     }
 
     // 监听窗口大小变化（后备方案）
-    window.addEventListener('resize', calculateBottomPadding)
+    window.addEventListener('resize', updateViewport)
 
     return () => {
       if (window.visualViewport) {
-        window.visualViewport.removeEventListener(
-          'resize',
-          calculateBottomPadding
-        )
-        window.visualViewport.removeEventListener(
-          'scroll',
-          calculateBottomPadding
-        )
+        window.visualViewport.removeEventListener('resize', updateViewport)
+        window.visualViewport.removeEventListener('scroll', updateViewport)
       }
-      window.removeEventListener('resize', calculateBottomPadding)
+      window.removeEventListener('resize', updateViewport)
     }
   }, [showMenu]) // 依赖 showMenu，只在菜单打开时监听
+
+  // 在菜单打开后计算底部区域高度
+  useEffect(() => {
+    if (!showMenu || !bottomAreaRef.current) return
+
+    // 使用 setTimeout 确保 DOM 已完全渲染
+    const timer = setTimeout(() => {
+      if (bottomAreaRef.current) {
+        const height = bottomAreaRef.current.offsetHeight
+        setBottomAreaHeight(height)
+      }
+    }, 0)
+
+    return () => clearTimeout(timer)
+  }, [showMenu, topOffset]) // 当菜单状态或顶部偏移变化时重新计算
 
   if (!visibleLinks || visibleLinks.length === 0) {
     return null
@@ -232,8 +245,14 @@ export const MenuList = props => {
             onClick={toggleMenu}
           />
           {/* 侧边菜单面板 */}
-          <div className='fixed right-0 top-0 z-[101] h-screen w-[280px] bg-white shadow-xl dark:bg-dark-2 lg:hidden transform transition-transform duration-300 ease-in-out overflow-hidden'>
-            <div className='flex h-full flex-col'>
+          <div 
+            className='fixed right-0 z-[101] w-[280px] bg-white shadow-xl dark:bg-dark-2 lg:hidden transform transition-transform duration-300 ease-in-out overflow-hidden'
+            style={{ 
+              top: `${topOffset}px`,
+              height: viewportHeight ? `${viewportHeight}px` : '100vh',
+              maxHeight: viewportHeight ? `${viewportHeight}px` : '100vh'
+            }}>
+            <div className='flex h-full flex-col relative'>
               {/* 关闭按钮 */}
               <div className='flex items-center justify-between border-b border-gray-200 px-4 py-4 dark:border-gray-600'>
                 <span className='text-lg font-semibold text-dark dark:text-white'>Menu</span>
@@ -245,7 +264,11 @@ export const MenuList = props => {
               </div>
 
               {/* 菜单内容区域 - 可滚动 */}
-              <div className='flex-1 overflow-y-auto'>
+              <div 
+                className='flex-1 overflow-y-auto'
+                style={{ 
+                  paddingBottom: bottomAreaHeight > 0 ? `${bottomAreaHeight}px` : '200px'
+                }}>
                 {/* 所有菜单项 */}
                 {visibleLinks && visibleLinks.length > 0 ? (
                   <ul className='py-2'>
@@ -271,8 +294,15 @@ export const MenuList = props => {
 
               {/* 底部固定区域 - 夜间模式和 Dashboard */}
               <div 
+                ref={bottomAreaRef}
                 className='border-t border-gray-200 bg-gray-50 p-4 dark:border-gray-600 dark:bg-dark-3'
-                style={{ paddingBottom: `calc(1rem + ${bottomPadding}px)` }}>
+                style={{ 
+                  position: 'absolute',
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  paddingBottom: `calc(1rem + env(safe-area-inset-bottom, 0px))`
+                }}>
                 {/* 深色模式切换 */}
                 <div 
                   onClick={toggleDarkMode}
