@@ -19,7 +19,10 @@ export const MenuList = props => {
   const [showMenu, setShowMenu] = useState(false) // 控制菜单展开/收起状态
   const [canScrollLeft, setCanScrollLeft] = useState(false)
   const [canScrollRight, setCanScrollRight] = useState(false)
+  const [canScrollLeftDesktop, setCanScrollLeftDesktop] = useState(false)
+  const [canScrollRightDesktop, setCanScrollRightDesktop] = useState(false)
   const scrollContainerRef = useRef(null)
+  const scrollContainerDesktopRef = useRef(null)
   const router = useRouter()
 
   let links = [
@@ -69,7 +72,7 @@ export const MenuList = props => {
     setShowMenu(false)
   }, [router])
 
-  // 检查滚动状态
+  // 检查滚动状态（移动端）
   const checkScrollability = () => {
     if (!scrollContainerRef.current) return
     const container = scrollContainerRef.current
@@ -79,7 +82,17 @@ export const MenuList = props => {
     )
   }
 
-  // 滚动函数
+  // 检查滚动状态（桌面端）
+  const checkScrollabilityDesktop = () => {
+    if (!scrollContainerDesktopRef.current) return
+    const container = scrollContainerDesktopRef.current
+    setCanScrollLeftDesktop(container.scrollLeft > 0)
+    setCanScrollRightDesktop(
+      container.scrollLeft < container.scrollWidth - container.clientWidth
+    )
+  }
+
+  // 滚动函数（移动端）
   const scroll = direction => {
     if (!scrollContainerRef.current) return
     const container = scrollContainerRef.current
@@ -90,7 +103,18 @@ export const MenuList = props => {
     })
   }
 
-  // 监听滚动事件
+  // 滚动函数（桌面端）
+  const scrollDesktop = direction => {
+    if (!scrollContainerDesktopRef.current) return
+    const container = scrollContainerDesktopRef.current
+    const scrollAmount = container.clientWidth * 0.8
+    container.scrollBy({
+      left: direction === 'left' ? -scrollAmount : scrollAmount,
+      behavior: 'smooth'
+    })
+  }
+
+  // 监听滚动事件（移动端）
   useEffect(() => {
     const container = scrollContainerRef.current
     if (!container) return
@@ -102,6 +126,21 @@ export const MenuList = props => {
     return () => {
       container.removeEventListener('scroll', checkScrollability)
       window.removeEventListener('resize', checkScrollability)
+    }
+  }, [visibleLinks])
+
+  // 监听滚动事件（桌面端）
+  useEffect(() => {
+    const container = scrollContainerDesktopRef.current
+    if (!container) return
+
+    checkScrollabilityDesktop()
+    container.addEventListener('scroll', checkScrollabilityDesktop)
+    window.addEventListener('resize', checkScrollabilityDesktop)
+
+    return () => {
+      container.removeEventListener('scroll', checkScrollabilityDesktop)
+      window.removeEventListener('resize', checkScrollabilityDesktop)
     }
   }, [visibleLinks])
 
@@ -256,12 +295,56 @@ export const MenuList = props => {
         </div>
 
 
-        {/* 桌面端：正常显示 */}
-        <ul className='hidden lg:flex 2xl:ml-20'>
-          {visibleLinks?.map((link, index) => (
-            <MenuItem key={index} link={link} />
-          ))}
-        </ul>
+        {/* 桌面端：带箭头的滚动菜单 */}
+        <div className='hidden lg:flex items-center w-full relative'>
+          {/* 左箭头 - 只在超过4个且可滚动时显示 */}
+          {visibleLinks.length > 4 && canScrollLeftDesktop && (
+            <button
+              onClick={() => scrollDesktop('left')}
+              className='flex-shrink-0 flex h-full w-8 items-center justify-center text-white opacity-70 hover:opacity-100 z-10'>
+              <i className='fas fa-chevron-left text-sm'></i>
+            </button>
+          )}
+
+          {/* 菜单项容器 - 平均分配空间 */}
+          <div className={`flex-1 overflow-hidden ${visibleLinks.length > 4 ? 'px-2' : ''}`}>
+            <ul
+              ref={scrollContainerDesktopRef}
+              className={`flex scrollbar-hide ${visibleLinks.length > 4 ? 'overflow-x-auto' : ''}`}
+              style={{ 
+                scrollbarWidth: 'none', 
+                msOverflowStyle: 'none',
+                width: visibleLinks.length > 4 ? 'auto' : '100%'
+              }}>
+              {visibleLinks?.map((link, index) => (
+                <li 
+                  key={index} 
+                  className={visibleLinks.length > 4 ? 'flex-shrink-0' : 'flex-1'}
+                  style={{ 
+                    width: visibleLinks.length > 4 
+                      ? `${100 / visibleLinks.length}%` 
+                      : `${100 / Math.max(visibleLinks.length, 4)}%`,
+                    minWidth: visibleLinks.length > 4 
+                      ? `${100 / visibleLinks.length}%` 
+                      : `${100 / Math.max(visibleLinks.length, 4)}%`
+                  }}>
+                  <div className='w-full flex justify-center'>
+                    <MenuItem link={link} />
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* 右箭头 - 只在超过4个且可滚动时显示 */}
+          {visibleLinks.length > 4 && canScrollRightDesktop && (
+            <button
+              onClick={() => scrollDesktop('right')}
+              className='flex-shrink-0 flex h-full w-8 items-center justify-center text-white opacity-70 hover:opacity-100 z-10'>
+              <i className='fas fa-chevron-right text-sm'></i>
+            </button>
+          )}
+        </div>
       </nav>
     </div>
   )

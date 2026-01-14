@@ -26,12 +26,12 @@ export const MenuItem = ({ link }) => {
           <SmartLink
             href={link?.href}
             target={link?.target}
-            className={`ud-menu-scroll mx-4 flex py-2 text-[10px] font-medium text-white group-hover:text-primary lg:mx-8 lg:mr-0 lg:inline-flex lg:px-0 lg:py-6 lg:text-base lg:text-dark lg:dark:text-white ${
+            className={`ud-menu-scroll mx-4 flex py-2 text-[11.5px] font-medium text-white group-hover:text-primary md:text-[1.14rem] lg:mx-8 lg:mr-0 lg:inline-flex lg:px-0 lg:py-6 lg:text-base lg:text-dark lg:dark:text-white ${
               router.route === '/'
                 ? 'lg:text-white lg:group-hover:text-white'
                 : ''
             } lg:group-hover:opacity-70`}>
-            {link?.icon && <i className={link.icon + ' mr-1 lg:mr-2 my-auto text-[10px] lg:text-base'} />}
+            {link?.icon && <i className={link.icon + ' mr-1 lg:mr-2 my-auto text-[11.5px] md:text-[1.14rem] lg:text-base'} />}
             {link?.name}
           </SmartLink>
         </li>
@@ -42,7 +42,7 @@ export const MenuItem = ({ link }) => {
         <li className='submenu-item group relative whitespace-nowrap flex-shrink-0'>
           <button
             onClick={toggleSubMenu}
-            className={`cursor-pointer relative px-4 flex items-center justify-between py-2 text-[10px] font-medium text-white group-hover:text-primary lg:px-8 lg:ml-8 lg:mr-0 lg:inline-flex lg:py-6 lg:pl-0 lg:pr-4 lg:text-base lg:text-dark lg:dark:text-white ${
+            className={`cursor-pointer relative px-4 flex items-center justify-between py-2 text-[11.5px] font-medium text-white group-hover:text-primary md:text-[1.14rem] lg:px-8 lg:ml-8 lg:mr-0 lg:inline-flex lg:py-6 lg:pl-0 lg:pr-4 lg:text-base lg:text-dark lg:dark:text-white ${
               router.route === '/'
                 ? 'lg:text-white lg:group-hover:text-white'
                 : ''

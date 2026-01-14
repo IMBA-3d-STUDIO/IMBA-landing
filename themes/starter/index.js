@@ -84,7 +84,6 @@ const LayoutBase = props => {
             </div>
 
             {/* 页脚 */}
-            
             {isLiteMode ? <></> : <Footer {...props} />}
 
             {/* 悬浮按钮 */}
