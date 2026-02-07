@@ -31,8 +31,17 @@ import DashboardBody from '@/components/ui/dashboard/DashboardBody'
 import DashboardHeader from '@/components/ui/dashboard/DashboardHeader'
 import { useGlobal } from '@/lib/global'
 import { loadWowJS } from '@/lib/plugins/wow'
-import { SignIn, SignUp } from '@clerk/nextjs'
+import dynamic from 'next/dynamic'
 import SmartLink from '@/components/SmartLink'
+
+const SignIn = dynamic(
+  () => import('@clerk/nextjs').then(m => m.SignIn),
+  { ssr: false }
+)
+const SignUp = dynamic(
+  () => import('@clerk/nextjs').then(m => m.SignUp),
+  { ssr: false }
+)
 import { ArticleLock } from './components/ArticleLock'
 import { Banner } from './components/Banner'
 import { CTA } from './components/CTA'

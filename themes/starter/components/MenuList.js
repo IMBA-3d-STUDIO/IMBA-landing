@@ -1,13 +1,14 @@
 import BLOG from '@/blog.config'
 import { siteConfig } from '@/lib/config'
 import { useGlobal } from '@/lib/global'
+import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import { useEffect, useState, useRef } from 'react'
 import { MenuItem } from './MenuItem'
 import { DarkModeButton } from './DarkModeButton'
 import SmartLink from '@/components/SmartLink'
-import { SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
-import DashboardButton from '@/components/ui/dashboard/DashboardButton'
+
+const ClerkAuthNav = dynamic(() => import('@/components/ClerkAuthNav'), { ssr: false })
 
 /**
  * 响应式 折叠菜单
@@ -313,26 +314,9 @@ export const MenuList = props => {
                   <DarkModeButton inSideMenu={true} />
                 </div>
                 
-                {/* Dashboard 按钮 */}
+                {/* Dashboard 按钮（Clerk 仅客户端渲染，避免 SSG 报错） */}
                 {enableClerk && (
-                  <>
-                    <SignedOut>
-                      <SmartLink
-                        href='https://make.imbastudio.ca/dashboard/'
-                        target='_blank'
-                        rel='noreferrer'
-                        onClick={toggleMenu}
-                        className='block w-full rounded-md bg-primary py-3 text-center text-sm font-medium text-white duration-300 ease-in-out hover:bg-blue-dark'>
-                        Dashboard
-                      </SmartLink>
-                    </SignedOut>
-                    <SignedIn>
-                      <div className='mb-3 flex items-center justify-center'>
-                        <UserButton />
-                      </div>
-                      <DashboardButton />
-                    </SignedIn>
-                  </>
+                  <ClerkAuthNav variant='menu' onMenuClose={toggleMenu} />
                 )}
                 {!enableClerk && (
                   <SmartLink

@@ -19,11 +19,10 @@ import BLOG from '@/blog.config'
 import ExternalPlugins from '@/components/ExternalPlugins'
 import Maintenance from '@/components/Maintenance'
 import SEO from '@/components/SEO'
-import { zhCN } from '@clerk/localizations'
 import dynamic from 'next/dynamic'
-// import { ClerkProvider } from '@clerk/nextjs'
-const ClerkProvider = dynamic(() =>
-  import('@clerk/nextjs').then(m => m.ClerkProvider)
+const ClerkUserInjector = dynamic(
+  () => import('@/components/ClerkUserInjector'),
+  { ssr: false }
 )
 
 /**
@@ -65,9 +64,10 @@ const MyApp = ({ Component, pageProps }) => {
     [theme]
   )
 
-  const enableClerk = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+  const enableClerk = !!process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
   const content = (
     <GlobalContextProvider {...pageProps}>
+      {enableClerk && <ClerkUserInjector />}
       <GLayout {...pageProps}>
         <SEO {...pageProps} />
         <Component {...pageProps} />
@@ -75,10 +75,32 @@ const MyApp = ({ Component, pageProps }) => {
       <ExternalPlugins {...pageProps} />
     </GlobalContextProvider>
   )
+
+  // SSG 时用 content 作为占位，不执行 ClerkProvider，避免 "Cannot destructure property 'auth'" 构建报错
+  const ClerkProviderWithSSGFallback = useMemo(
+    () =>
+      dynamic(
+        () =>
+          Promise.all([
+            import('@clerk/nextjs'),
+            import('@clerk/localizations')
+          ]).then(([clerk, loc]) => {
+            const CP = clerk.ClerkProvider
+            return function ClerkProviderWrap(props) {
+              return <CP localization={loc.zhCN} {...props} />
+            }
+          }),
+        { ssr: false, loading: () => content }
+      ),
+    []
+  )
+
   return (
     <>
       {enableClerk ? (
-        <ClerkProvider localization={zhCN}>{content}</ClerkProvider>
+        <ClerkProviderWithSSGFallback>
+          {content}
+        </ClerkProviderWithSSGFallback>
       ) : (
         content
       )}

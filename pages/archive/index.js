@@ -30,22 +30,18 @@ const ArchiveIndex = props => {
   return <DynamicLayout theme={theme} layoutName='LayoutArchive' {...props} />
 }
 
-export async function getStaticProps({ locale }) {
+// 使用 getServerSideProps 避免 SSG 预渲染时触发 Clerk auth 报错
+export async function getServerSideProps({ locale }) {
   const props = await getGlobalData({ from: 'archive-index', locale })
-  // 处理分页
   props.posts = props.allPages?.filter(
     page => page.type === 'Post' && page.status === 'Published'
   )
   delete props.allPages
 
   const postsSortByDate = Object.create(props.posts)
-
-  postsSortByDate.sort((a, b) => {
-    return b?.publishDate - a?.publishDate
-  })
+  postsSortByDate.sort((a, b) => b?.publishDate - a?.publishDate)
 
   const archivePosts = {}
-
   postsSortByDate.forEach(post => {
     const date = formatDateFmt(post.publishDate, 'yyyy-MM')
     if (archivePosts[date]) {
@@ -56,18 +52,7 @@ export async function getStaticProps({ locale }) {
   })
 
   props.archivePosts = archivePosts
-  delete props.allPages
-
-  return {
-    props,
-    revalidate: process.env.EXPORT
-      ? undefined
-      : siteConfig(
-          'NEXT_REVALIDATE_SECOND',
-          BLOG.NEXT_REVALIDATE_SECOND,
-          props.NOTION_CONFIG
-        )
-  }
+  return { props }
 }
 
 export default ArchiveIndex
