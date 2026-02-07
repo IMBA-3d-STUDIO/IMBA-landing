@@ -16,6 +16,7 @@ import { getQueryParam } from '../lib/utils'
 // 各种扩展插件 这个要阻塞引入
 import BLOG from '@/blog.config'
 import ExternalPlugins from '@/components/ExternalPlugins'
+import Maintenance from '@/components/Maintenance'
 import SEO from '@/components/SEO'
 import { zhCN } from '@clerk/localizations'
 import dynamic from 'next/dynamic'
@@ -32,6 +33,15 @@ const ClerkProvider = dynamic(() =>
 const MyApp = ({ Component, pageProps }) => {
   // 一些可能出现 bug 的样式，可以统一放入该钩子进行调整
   useAdjustStyle()
+
+  if (pageProps?.maintenanceMode) {
+    return (
+      <>
+        <SEO {...pageProps} title='Maintenance' />
+        <Maintenance />
+      </>
+    )
+  }
 
   const route = useRouter()
   const theme = useMemo(() => {
