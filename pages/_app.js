@@ -9,6 +9,7 @@ import 'react-notion-x/src/styles.css' // 原版的react-notion-x
 import useAdjustStyle from '@/hooks/useAdjustStyle'
 import { GlobalContextProvider } from '@/lib/global'
 import { getBaseLayoutByTheme } from '@/themes/theme'
+import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useCallback, useMemo } from 'react'
 import { getQueryParam } from '../lib/utils'
@@ -37,7 +38,10 @@ const MyApp = ({ Component, pageProps }) => {
   if (pageProps?.maintenanceMode) {
     return (
       <>
-        <SEO {...pageProps} title='Maintenance' />
+        <Head>
+          <title>Maintenance | IMBA Studio</title>
+          <meta name='robots' content='noindex, nofollow' />
+        </Head>
         <Maintenance />
       </>
     )
