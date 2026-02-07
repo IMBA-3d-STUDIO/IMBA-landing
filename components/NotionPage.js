@@ -116,12 +116,24 @@ const NotionPage = ({ post, className }) => {
     return () => clearTimeout(timer)
   }, [post])
 
+  if (!post?.blockMap?.block) {
+    return (
+      <div
+        id='notion-article'
+        className={`mx-auto overflow-hidden ${className || ''}`}>
+        <p className='text-gray-500 dark:text-gray-400 py-8 text-center'>
+          Content is unavailable.
+        </p>
+      </div>
+    )
+  }
+
   return (
     <div
       id='notion-article'
       className={`mx-auto overflow-hidden ${className || ''}`}>
       <NotionRenderer
-        recordMap={post?.blockMap}
+        recordMap={post.blockMap}
         mapPageUrl={mapPageUrl}
         mapImageUrl={mapImgUrl}
         components={{
