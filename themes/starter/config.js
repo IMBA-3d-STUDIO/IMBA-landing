@@ -299,15 +299,15 @@ const CONFIG = {
     {
       TITLE: 'Features',
       LINK_GROUP: [
-        { TITLE: 'Corporate Customization', URL: '/#home' },
-        { TITLE: 'Local Made', URL: 'https://docs.tangly1024.com/about' },
+        { TITLE: 'Corporate Customization', URL: '' },
+        { TITLE: 'Local Made', URL: '' },
         {
           TITLE: 'Zero-emission goal',
-          URL: 'https://docs.tangly1024.com/article/how-to-question'
+          URL: ''
         },
         {
           TITLE: 'Tech Democracy',
-          URL: 'https://docs.tangly1024.com/article/my-service'
+          URL: ''
         }
       ]
     },
@@ -316,13 +316,13 @@ const CONFIG = {
       LINK_GROUP: [
         {
           TITLE: 'Shop',
-          URL: 'https://docs.tangly1024.com/article/vercel-deploy-notion-next'
+          URL: 'https://imba-studio-partner.square.site/'
         },
         {
           TITLE: 'Quests',
-          URL: 'https://docs.tangly1024.com/article/how-to-update-notionnext'
+          URL: ''
         },
-        { TITLE: 'Studio Logs', URL: 'https://docs.tangly1024.com/article/latest' }
+        { TITLE: 'Studio Logs', URL: '' }
       ]
     },
     {
@@ -334,7 +334,7 @@ const CONFIG = {
         },
         {
           TITLE: 'Instagram',
-          URL: 'https://www.instagram.com/imba_studio_ca/'
+          URL: ''
         },
         {
           TITLE: 'B2B & Corporate Orders',

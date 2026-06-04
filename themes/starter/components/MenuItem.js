@@ -2,6 +2,15 @@ import SmartLink from '@/components/SmartLink'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 
+const SHOP_URL = 'https://imba-studio-partner.square.site/'
+
+const getMenuHref = link => {
+  if (link?.name === 'Shop' || link?.title === 'Shop') {
+    return SHOP_URL
+  }
+  return link?.href
+}
+
 /**
  * 菜单链接
  * @param {*} param0
@@ -27,7 +36,7 @@ export const MenuItem = ({ link, isEqualWidth = false }) => {
       {!hasSubMenu && (
         <li className={`group relative whitespace-nowrap ${flexClass}`}>
           <SmartLink
-            href={link?.href}
+            href={getMenuHref(link)}
             target={link?.target}
             className={`ud-menu-scroll mx-4 flex py-2 text-[11.5px] font-medium text-white group-hover:text-primary md:text-[1.14rem] lg:mx-8 lg:mr-0 lg:inline-flex lg:px-0 lg:py-6 lg:text-base lg:text-dark lg:dark:text-white ${
               router.route === '/'
@@ -76,7 +85,7 @@ export const MenuItem = ({ link, isEqualWidth = false }) => {
             {link.subMenus.map((sLink, index) => (
               <SmartLink
                 key={index}
-                href={sLink.href}
+                href={getMenuHref(sLink)}
                 target={link?.target}
                 className='block rounded px-4 py-[10px] text-sm text-body-color hover:text-primary dark:text-dark-6 dark:hover:text-primary'>
                 {/* 子菜单 SubMenuItem */}

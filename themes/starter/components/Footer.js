@@ -7,6 +7,15 @@ import SmartLink from '@/components/SmartLink'
 import { handleEmailClick } from '@/lib/plugins/mailEncrypt'
 import { useRef } from 'react'
 
+const SHOP_URL = 'https://imba-studio-partner.square.site/'
+
+const getFooterLinkUrl = link => {
+  if (link?.TITLE === 'Shop') {
+    return SHOP_URL
+  }
+  return ''
+}
+
 /* eslint-disable @next/next/no-img-element */
 export const Footer = props => {
   const footerPostCount = siteConfig('STARTER_FOOTER_POST_COUNT', 2)
@@ -76,7 +85,7 @@ export const Footer = props => {
                         return (
                           <li key={i}>
                             <SmartLink
-                              href={l.URL}
+                              href={getFooterLinkUrl(l)}
                               className='mb-3 inline-block text-base text-gray-7 hover:text-primary'>
                               {l.TITLE}
                             </SmartLink>
